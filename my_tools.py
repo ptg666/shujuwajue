@@ -14,12 +14,12 @@ import matplotlib.font_manager as fm
     返回一个字典，字典中包含精确率，召回率，f1-score
 """
 def res_metrics(actual,predicted):
-    p = precision_score(actual, predicted)
+    # 精确率
+    p = precision_score(actual, predicted, average='binary',pos_label=0)
     # 召回率
-    r = recall_score(actual, predicted)
+    r = recall_score(actual, predicted, average='binary',pos_label=0)
     # f1-score
-    f1score = f1_score(actual, predicted)
-    # 封装成字典返回
+    f1score = f1_score(actual, predicted, average='binary',pos_label=0)
     res = {"precision":p,"recall":r,"f1":f1score}
     return res
 
@@ -34,7 +34,7 @@ def pierxun(jibing,jibing_res):
 """
     kmp 算法
     寻找匹配的模式
-    用于数据清晰
+    用于数据清洗
 """
 def Get_next(p,next):
     nums = len(p)
