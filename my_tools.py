@@ -7,20 +7,34 @@ from sklearn.preprocessing import MinMaxScaler
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+from prettytable import PrettyTable
 
 # 指标类工具
 """
     评价指标：
     返回一个字典，字典中包含精确率，召回率，f1-score
 """
-def res_metrics(actual,predicted):
+"""
+    加权平均（'weighted'）：计算每个类别的加权平均。在这种情况下，
+    你可以让每个类别的 f1-score 对最终结果的贡献与其样本数量成反比，
+    从而更准确地反映每个类别的重要性。
+"""
+def res_metrics(actual,predicted,title):
     # 精确率
-    p = precision_score(actual, predicted, average='binary',pos_label=0)
+    p = precision_score(actual, predicted)
     # 召回率
-    r = recall_score(actual, predicted, average='binary',pos_label=0)
+    r = recall_score(actual, predicted)
     # f1-score
-    f1score = f1_score(actual, predicted, average='binary',pos_label=0)
-    res = {"precision":p,"recall":r,"f1":f1score}
+    f1score = f1_score(actual, predicted)
+    res = {"precision":p,"recall":r,"f1-score":f1score}
+    # 创建一个表格
+    table = PrettyTable()
+    table.field_names = ['precision', 'recall', 'f1']
+    table.add_row([p, r, f1score])
+    # 如果不是调参模式就仅输出指标
+    if title != "调参":
+        print(title.center(50, '#'))
+        print(table)
     return res
 
 """
@@ -30,7 +44,6 @@ def pierxun(jibing,jibing_res):
     pass
 
 # 数据处理类工具
-
 """
     kmp 算法
     寻找匹配的模式
@@ -131,36 +144,28 @@ def biaozhunhua(jibing):
     便于决策树做出决策
     便于贝叶斯计算概率
 """
-def fenxiang(jibing):
+def fenxiang(jibing,num):
     # 获取连续型变量的列名
     col = jibing.columns.tolist()
-    col = col[9:59]
+    col = col[10:59]
     col.append("年龄")
     # 数据总行数
     total = jibing.shape[0]
     # 对与每列进行操作
     for j in range(len(col)):
         # 获取最大最小值，划分区间
-        # 分为7个等级
+        # 分为num个等级
         min_ = jibing.loc[:, col[j]].min()
         max_ = jibing.loc[:, col[j]].max()
-        qujian = np.linspace(min_, max_, 8)
+        qujian = np.linspace(min_, max_, num+1)
         # 将数据划分到对应的等级中
         for i in range(total):
             if jibing.loc[i, col[j]] <= qujian[1]:
                 jibing.loc[i, col[j]] = 1
-            if jibing.loc[i, col[j]] <= qujian[2] and jibing.loc[i, col[j]] > qujian[1]:
-                jibing.loc[i, col[j]] = 2
-            if jibing.loc[i, col[j]] <= qujian[3] and jibing.loc[i, col[j]] > qujian[2]:
-                jibing.loc[i, col[j]] = 3
-            if jibing.loc[i, col[j]] <= qujian[4] and jibing.loc[i, col[j]] > qujian[3]:
-                jibing.loc[i, col[j]] = 4
-            if jibing.loc[i, col[j]] <= qujian[5] and jibing.loc[i, col[j]] > qujian[4]:
-                jibing.loc[i, col[j]] = 5
-            if jibing.loc[i, col[j]] <= qujian[6] and jibing.loc[i, col[j]] > qujian[5]:
-                jibing.loc[i, col[j]] = 6
-            if jibing.loc[i, col[j]] <= qujian[7] and jibing.loc[i, col[j]] > qujian[6]:
-                jibing.loc[i, col[j]] = 7
+            for k in np.linspace(2,num,num-1,dtype = int):
+                if jibing.loc[i, col[j]] <= qujian[k] and jibing.loc[i, col[j]] > qujian[k-1]:
+                    jibing.loc[i, col[j]] = k
+                    break
     return jibing
 
 
