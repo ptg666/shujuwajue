@@ -44,15 +44,6 @@ def res_metrics(actual,predicted,title):
 def pierxun(jibing,jibing_res):
     pass
 
-# from sklearn.svm import SVC
-# clf = SVC(kernel='rbf',C=1.08,gamma=gamma_)
-# clf = clf.fit(Xtrain,Ytrain)
-# y_pre = clf.predict(Xtest)
-# metrics_ = res_metrics(Ytest,y_pre,"调参")
-# f1_list.append(metrics_["f1-score"])
-# 
-
-
 # 数据处理类工具
 """
     kmp 算法
