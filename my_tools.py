@@ -25,7 +25,8 @@ def res_metrics(actual,predicted,title):
     # 召回率
     r = recall_score(actual, predicted)
     # f1-score
-    f1score = f1_score(actual, predicted)
+    # p 和 r 的调和平均数
+    f1score = (2 * p * r) / (p + r)
     res = {"precision":p,"recall":r,"f1-score":f1score}
     # 创建一个表格
     table = PrettyTable()
@@ -42,6 +43,15 @@ def res_metrics(actual,predicted,title):
 """
 def pierxun(jibing,jibing_res):
     pass
+
+# from sklearn.svm import SVC
+# clf = SVC(kernel='rbf',C=1.08,gamma=gamma_)
+# clf = clf.fit(Xtrain,Ytrain)
+# y_pre = clf.predict(Xtest)
+# metrics_ = res_metrics(Ytest,y_pre,"调参")
+# f1_list.append(metrics_["f1-score"])
+# 
+
 
 # 数据处理类工具
 """
